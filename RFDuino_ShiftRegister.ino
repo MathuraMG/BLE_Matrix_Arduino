@@ -30,8 +30,8 @@ void setup() {
   pinMode(latchPin, OUTPUT);
   pinMode(clockPin, OUTPUT);
   pinMode(dataPin, OUTPUT);
-  pinMode(1,OUTPUT);
-  digitalWrite(1,HIGH);
+  pinMode(1, OUTPUT);
+  digitalWrite(1, HIGH);
   // set advertised local name and service UUID
   blePeripheral.setLocalName("LEDStrip");
   blePeripheral.setDeviceName("LEDStrip");
@@ -47,18 +47,17 @@ void setup() {
 
   // begin initialization
   blePeripheral.begin();
-
   Serial.println(F("Bluetooth LED"));
-     shiftOut(dataPin, clockPin, MSBFIRST, 255);
-     shiftOut(dataPin, clockPin, MSBFIRST, 255);
-     shiftOut(dataPin, clockPin, MSBFIRST, 255);
-     shiftOut(dataPin, clockPin, MSBFIRST, 255);
+  shiftOut(dataPin, clockPin, MSBFIRST, 255);
+  shiftOut(dataPin, clockPin, MSBFIRST, 255);
+  shiftOut(dataPin, clockPin, MSBFIRST, 255);
+  shiftOut(dataPin, clockPin, MSBFIRST, 255);
 
 }
 
 void loop() {
   // Tell the bluetooth radio to do whatever it should be working on
-   //shiftOut(dataPin, clockPin, MSBFIRST, 255);
+  //shiftOut(dataPin, clockPin, MSBFIRST, 255);
   //shiftOut(dataPin, clockPin, MSBFIRST, 255);
   blePeripheral.poll();
 
@@ -67,17 +66,19 @@ void loop() {
 void ledStripCharacteristicWritten(BLECentral& central, BLECharacteristic& characteristic) {
   Serial.println("in here");
   digitalWrite(latchPin, LOW);
-  
+
   //int x = ledStripCharacteristic.value();
   Serial.println(ledStripCharacteristic.value());
   int x = ledStripCharacteristic.value();
-  int low = x & 0xff;
-  int high = x>>8;
-  
-  shiftOut(dataPin, clockPin, MSBFIRST, high);
-  shiftOut(dataPin, clockPin, MSBFIRST, low);
-  shiftOut(dataPin, clockPin, MSBFIRST, high);
-  shiftOut(dataPin, clockPin, MSBFIRST, low);
+  int data1 = x & 0xff;
+  int data2 = x >> 8;
+  int data3 = x >> 16;
+  int data4 = x >> 24;
+
+  shiftOut(dataPin, clockPin, MSBFIRST, data4);
+  shiftOut(dataPin, clockPin, MSBFIRST, data3);
+  shiftOut(dataPin, clockPin, MSBFIRST, data2);
+  shiftOut(dataPin, clockPin, MSBFIRST, data1);
   digitalWrite(latchPin, HIGH);
   //delay(1000);
 }
