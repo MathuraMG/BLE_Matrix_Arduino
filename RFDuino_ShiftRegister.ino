@@ -20,7 +20,7 @@ BLEPeripheral blePeripheral = BLEPeripheral(BLE_REQ, BLE_RDY, BLE_RST);
 BLEService ledService = BLEService("FF10");
 
 // create number
-BLECharCharacteristic ledStripCharacteristic = BLECharCharacteristic("FF12", BLERead | BLEWrite);
+BLEIntCharacteristic ledStripCharacteristic = BLEIntCharacteristic("FF12", BLERead | BLEWrite);
 BLEDescriptor ledStripDescriptor = BLEDescriptor("2901", "Number");
 
 void setup() {
@@ -65,9 +65,12 @@ void loop() {
 }
 
 void ledStripCharacteristicWritten(BLECentral& central, BLECharacteristic& characteristic) {
+  Serial.println("in here");
   digitalWrite(latchPin, LOW);
+  
+  //int x = ledStripCharacteristic.value();
+  Serial.println(ledStripCharacteristic.value());
   int x = ledStripCharacteristic.value();
-  Serial.println(x);
   int low = x & 0xff;
   int high = x>>8;
   
